@@ -7,6 +7,8 @@ public class Song {
     private int image;              // TODO: what type? is needed? maybe the path?
     private String path_to_song;    // path to the song file
 
+    private int id;
+
     public Song(String path_to_song) {
         this.path_to_song = path_to_song;
         // TODO: implement all the rest
