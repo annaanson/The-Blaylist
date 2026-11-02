@@ -1,31 +1,47 @@
 package com.example.blaylist;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
 
 /**
  * Connects the screens to the songs state. The screens only observe {@link SongPlaying}
  * and redraw themselves whenever it changes; the on...() methods are where the user's
  * actions should be turned into changes of the state.
  */
-public class SongsViewModel extends ViewModel {
+public class SongsViewModel extends AndroidViewModel {
 
     // one state shared by both screens
-    private static final SongsEntireState STATE = new SongsEntireState();
+    private final Repository STATE = Repository.getInstance();
+    public SongsViewModel(@NonNull Application application){
+        super(application);
 
-    public LiveData<SongPlaying> getSongPlaying() {
-        return STATE.get_song_playing();
     }
 
-    public Song[] getSongs() {
-        return STATE.get_songs_list();
+    public LiveData<SongPlaying> getSongPlaying() {
+        return STATE.getCurrentSongPlaying();
+    }
+
+    public LiveData<List<Song>> getSongs() {
+        return STATE.getSongs();
     }
 
     public void onSongSelectedUIUpdate(int index) {
         // logic - make songs[index] the current song and play it
-        Song selected_song = getSongs()[index];
+        List<Song> songs = getSongs().getValue();
+        if(songs == null){
+            // error
+            return;
+        }
+
+        Song selected_song = songs.get(index);
         SongPlaying selected_song_playing = new SongPlaying(true, selected_song, 0);
-        STATE.updateSongPlaying(selected_song_playing);
+        STATE.setCurrentSongPlaying(selected_song_playing);
     }
 
     public void onPlayPauseClickedUIUpdate() {
@@ -33,22 +49,18 @@ public class SongsViewModel extends ViewModel {
 
         SongPlaying current_song = getSongPlaying().getValue();
         if(current_song == null){
+            // error
             return;
         }
         boolean currently_is_playing = current_song.is_playing();
         current_song.setIs_playing(!currently_is_playing);
-        STATE.updateSongPlaying(current_song);
+        STATE.setCurrentSongPlaying(current_song);
     }
 
-    public void onNextClickedUIUpdate() {
-        // TODO: logic - play the next song
-    }
-
-    public void onPreviousClickedUIUpdate() {
-        // TODO: logic - play the previous song
-    }
-
-    public void onSeekUIUpdate(int secs_from_start) {
-        // TODO: logic - jump to secs_from_start in the current song
+    public void loadSongs() {
+        // guard: query only once; survives rotation because the ViewModel does
+        if (STATE.getSongs().getValue() == null) {
+            STATE.loadSongs(getApplication());   // Application IS a Context
+        }
     }
 }

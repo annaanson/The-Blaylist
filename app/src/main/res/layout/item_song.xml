@@ -53,14 +53,14 @@
                 tools:text="Song of the Sands" />
 
             <TextView
-                android:id="@+id/song_author"
+                android:id="@+id/song_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.Blaylist.SongAuthor"
+                android:textAppearance="@style/TextAppearance.Blaylist.SongArtist"
                 tools:text="The Wandering Shepherd" />
         </LinearLayout>
 

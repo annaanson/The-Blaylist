@@ -3,6 +3,7 @@ package com.example.blaylist;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +14,8 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,15 +38,23 @@ public class MainActivity extends AppCompatActivity {
         SongAdapter adapter = new SongAdapter(this::openSong);
         songs_list.setAdapter(adapter);
 
-        Song[] songs = view_model.getSongs();
-        adapter.setSongs(songs);
-        showSongCount(songs.length);
+        // redraw the list every time the songs change (they arrive later, from a background thread)
+        view_model.getSongs().observe(this, songs -> {
+            if (songs == null) {
+                showSongCount(0);
+                return;
+            }
+            adapter.setSongs(songs);
+            showSongCount(songs.size());
+            songs_list.scheduleLayoutAnimation();
+        });
 
+        view_model.loadSongs();
         playHeaderAnimation();
     }
 
     private void openSong(int index) {
-        view_model.onSongSelected(index);
+        view_model.onSongSelectedUIUpdate(index);
         Intent intent = new Intent(this, PlayingActivity.class);
         intent.putExtra(PlayingActivity.EXTRA_SONG_INDEX, index);
         startActivity(intent);

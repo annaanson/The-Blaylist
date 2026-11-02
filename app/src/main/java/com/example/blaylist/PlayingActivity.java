@@ -23,6 +23,9 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+
+import java.util.List;
 import java.util.Locale;
 
 public class PlayingActivity extends AppCompatActivity {
@@ -33,7 +36,7 @@ public class PlayingActivity extends AppCompatActivity {
 
     private ImageView song_art;
     private TextView song_title;
-    private TextView song_author;
+    private TextView song_artist;
     private SeekBar seek_bar;
     private TextView time_elapsed;
     private TextView time_total;
@@ -67,9 +70,10 @@ public class PlayingActivity extends AppCompatActivity {
 
         view_model = new ViewModelProvider(this).get(SongsViewModel.class);
 
+
         song_art = findViewById(R.id.song_art);
         song_title = findViewById(R.id.song_title);
-        song_author = findViewById(R.id.song_author);
+        song_artist= findViewById(R.id.song_artist);
         seek_bar = findViewById(R.id.seek_bar);
         time_elapsed = findViewById(R.id.time_elapsed);
         time_total = findViewById(R.id.time_total);
@@ -81,17 +85,17 @@ public class PlayingActivity extends AppCompatActivity {
 
         play_pause_button.setOnClickListener(v -> {
             pressBounce(v);
-            view_model.onPlayPauseClicked();
+//            view_model.onPlayPauseClicked();
         });
         next_button.setOnClickListener(v -> {
             nudge(v, 1);
             slide_direction = 1;
-            view_model.onNextClicked();
+//            view_model.onNextClicked();
         });
         previous_button.setOnClickListener(v -> {
             nudge(v, -1);
             slide_direction = -1;
-            view_model.onPreviousClicked();
+//            view_model.onPreviousClicked();
         });
 
         setupSceneryAnimations();
@@ -134,13 +138,17 @@ public class PlayingActivity extends AppCompatActivity {
     }
 
     private void showSelectedSong(int index) {
-        Song[] songs = view_model.getSongs();
-        if (index >= 0 && index < songs.length) {
-            showSong(songs[index]);
-            showProgress(0, songs[index].getDuration());
+        List<Song> songs = view_model.getSongs().getValue();
+        if(songs == null){
+            // error;
+            return;
+        }
+        if (index >= 0 && index < songs.size()) {
+            showSong(songs.get(index));
+            showProgress(0, songs.get(index).getDuration());
         } else {
             song_title.setText(R.string.nothing_playing);
-            song_author.setVisibility(View.GONE);
+            song_artist.setVisibility(View.GONE);
         }
         showPlaying(false);
     }
@@ -148,22 +156,22 @@ public class PlayingActivity extends AppCompatActivity {
     private void showSong(Song song) {
         shown_song = song;
         song_title.setText(SongAdapter.displayName(song_title, song));
-        if (song.getAuthor() != null && !song.getAuthor().isEmpty()) {
-            song_author.setText(song.getAuthor());
-            song_author.setVisibility(View.VISIBLE);
+        if (song.getArtist() != null && !song.getArtist().isEmpty()) {
+            song_artist.setText(song.getArtist());
+            song_artist.setVisibility(View.VISIBLE);
         } else {
-            song_author.setVisibility(View.INVISIBLE);
+            song_artist.setVisibility(View.INVISIBLE);
         }
-        if (song.getImage() != null) {
-            song_art.setImageBitmap(song.getImage());
-        } else {
-            song_art.setImageResource(R.drawable.art_placeholder);
-        }
+        Glide.with(song_art)                      // tied to this ImageView
+                .load(song.getContentUri())   // the cover embedded in the mp3, see BlaylistGlideModule
+                .placeholder(R.drawable.art_placeholder)
+                .error(R.drawable.art_placeholder)
+                .into(song_art);
     }
 
     /** The old song slides away and the new one slides in from the other side. */
     private void slideToSong(Song song) {
-        View[] views = {song_art, song_title, song_author};
+        View[] views = {song_art, song_title, song_artist};
         float distance = getResources().getDisplayMetrics().widthPixels * 0.7f * slide_direction;
         for (int i = 0; i < views.length; i++) {
             View v = views[i];
@@ -191,9 +199,9 @@ public class PlayingActivity extends AppCompatActivity {
         shown_song = song;
     }
 
-    private void showProgress(int secs_from_start, int duration) {
+    private void showProgress(int secs_from_start, long duration) {
         time_total.setText(formatTime(duration));
-        seek_bar.setMax(Math.max(duration, 0));
+        seek_bar.setMax(Math.max((int)duration, 0));
         if (!user_seeking) {
             seek_bar.setProgress(secs_from_start);
             time_elapsed.setText(formatTime(secs_from_start));
@@ -271,10 +279,11 @@ public class PlayingActivity extends AppCompatActivity {
         ).start();
     }
 
-    private static String formatTime(int secs) {
-        if (secs < 0) {
-            secs = 0;
+    private static String formatTime(long ms) {
+        if (ms < 0) {
+            ms = 0;
         }
+        long secs =  ms / 1000;
         return String.format(Locale.US, "%d:%02d", secs / 60, secs % 60);
     }
 }

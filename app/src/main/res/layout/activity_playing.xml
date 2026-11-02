@@ -114,14 +114,14 @@
         android:maxLines="2"
         android:textColor="@color/gold_light"
         android:textSize="27sp"
-        app:layout_constraintBottom_toTopOf="@id/song_author"
+        app:layout_constraintBottom_toTopOf="@id/song_artist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/song_art"
         tools:text="Song of the Sands" />
 
     <TextView
-        android:id="@+id/song_author"
+        android:id="@+id/song_artist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -152,7 +152,7 @@
         app:layout_constraintBottom_toTopOf="@id/time_elapsed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/song_author"
+        app:layout_constraintTop_toBottomOf="@id/song_artist"
         tools:max="200"
         tools:progress="70" />
 

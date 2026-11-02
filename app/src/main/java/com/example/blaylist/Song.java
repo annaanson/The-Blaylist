@@ -1,52 +1,35 @@
 package com.example.blaylist;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class Song {
-    private String name;            // the song's name
-    private String author;          // the song's author
-    private int duration;           // the song's duration
-    private Bitmap image;           // the song's embedded picture, null if it has none
-    private String path_to_song;    // path to the song file
+    private long id;
+    private Uri contentUri;
+    private String title;
+    private final String artist;
+    private final long duration;
 
-    private int id;
-
-    public Song(String path_to_song) {
-        this.path_to_song = path_to_song;
-        // TODO: implement all the rest
+    public Song(long id, Uri contentUri, String title, String artist, long duration) {
+        this.id = id;
+        this.contentUri = contentUri;
+        this.title = title;
+        this.artist = artist;
+        this.duration = duration;
     }
 
-    public String getPath_to_song() {
-        return path_to_song;
+    public Uri getContentUri(){
+        return contentUri;
     }
-
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String getArtist() {
+        return artist;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Song{" +
-                "name='" + name + '\'' +
-                ", author='" + author + '\'' +
-                ", duration=" + duration +
-                ", path_to_song='" + path_to_song + '\'' +
-                '}';
+    public String getTitle() {
+        return title;
     }
 }
