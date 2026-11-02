@@ -16,7 +16,7 @@ public class SongPlaying {
         this.secs_from_start = secs_from_start;
     }
 
-    public boolean isIs_playing() {
+    public boolean is_playing() {
         return is_playing;
     }
 

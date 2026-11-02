@@ -1,14 +1,22 @@
 package com.example.blaylist;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private SongsViewModel view_model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +28,59 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        view_model = new ViewModelProvider(this).get(SongsViewModel.class);
+
+        RecyclerView songs_list = findViewById(R.id.songs_list);
+        SongAdapter adapter = new SongAdapter(this::openSong);
+        songs_list.setAdapter(adapter);
+
+        Song[] songs = view_model.getSongs();
+        adapter.setSongs(songs);
+        showSongCount(songs.length);
+
+        playHeaderAnimation();
+    }
+
+    private void openSong(int index) {
+        view_model.onSongSelected(index);
+        Intent intent = new Intent(this, PlayingActivity.class);
+        intent.putExtra(PlayingActivity.EXTRA_SONG_INDEX, index);
+        startActivity(intent);
+        if (Build.VERSION.SDK_INT < 34) {
+            overridePendingTransition(R.anim.slide_up_in, R.anim.hold);
+        }
+    }
+
+    private void showSongCount(int count) {
+        TextView song_count = findViewById(R.id.song_count);
+        View empty_state = findViewById(R.id.empty_state);
+        if (count == 0) {
+            song_count.setText(R.string.song_count_zero);
+            empty_state.setVisibility(View.VISIBLE);
+        } else {
+            song_count.setText(getResources().getQuantityString(R.plurals.song_count, count, count));
+            empty_state.setVisibility(View.GONE);
+        }
+    }
+
+    private void playHeaderAnimation() {
+        // the logo rises like the sun, the title follows
+        View logo = findViewById(R.id.logo);
+        logo.setScaleX(0.6f);
+        logo.setScaleY(0.6f);
+        logo.setAlpha(0f);
+        logo.setRotation(-30f);
+        logo.animate().scaleX(1f).scaleY(1f).alpha(1f).rotation(0f)
+                .setDuration(700).setStartDelay(100).start();
+
+        int[] ids = {R.id.app_title, R.id.app_subtitle, R.id.divider, R.id.song_count};
+        for (int i = 0; i < ids.length; i++) {
+            View v = findViewById(ids[i]);
+            v.setAlpha(0f);
+            v.setTranslationY(24f);
+            v.animate().alpha(1f).translationY(0f)
+                    .setDuration(500).setStartDelay(250 + i * 90L).start();
+        }
     }
 }

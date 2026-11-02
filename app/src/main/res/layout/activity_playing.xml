@@ -1,11 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_night_sky"
     tools:context=".PlayingActivity">
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Scenery: stars, moon and dunes -->
+    <ImageView
+        android:id="@+id/stars"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:src="@drawable/stars_field"
+        app:layout_constraintDimensionRatio="3:2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/moon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="22dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_crescent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/dunes"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/dunes_night"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Top bar -->
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_control_ripple"
+        android:contentDescription="@string/cd_back"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/now_playing_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/aref_ruqaa_bold"
+        android:text="@string/now_playing"
+        android:textColor="@color/gold_light"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/back_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back_button" />
+
+    <ImageView
+        android:id="@+id/top_divider"
+        android:layout_width="160dp"
+        android:layout_height="12dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/ornament_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/now_playing_label" />
+
+    <!-- The song: image framed in a desert arch, its name and its author -->
+    <com.example.blaylist.ArchImageView
+        android:id="@+id/song_art"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/cd_album_art"
+        android:elevation="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/art_placeholder"
+        app:archStrokeColor="@color/gold"
+        app:archStrokeWidth="4dp"
+        app:layout_constraintBottom_toTopOf="@id/song_title"
+        app:layout_constraintDimensionRatio="4:5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="340dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_divider"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.64" />
+
+    <TextView
+        android:id="@+id/song_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/amiri_bold"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/gold_light"
+        android:textSize="27sp"
+        app:layout_constraintBottom_toTopOf="@id/song_author"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/song_art"
+        tools:text="Song of the Sands" />
+
+    <TextView
+        android:id="@+id/song_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/amiri_italic"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/sand"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/seek_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/song_title"
+        tools:text="The Wandering Shepherd" />
+
+    <!-- Progress -->
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:maxHeight="3dp"
+        android:minHeight="3dp"
+        android:progressDrawable="@drawable/seek_progress"
+        android:splitTrack="false"
+        android:thumb="@drawable/seek_thumb"
+        app:layout_constraintBottom_toTopOf="@id/time_elapsed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/song_author"
+        tools:max="200"
+        tools:progress="70" />
+
+    <TextView
+        android:id="@+id/time_elapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:fontFamily="@font/amiri_regular"
+        android:text="@string/time_zero"
+        android:textColor="@color/sand"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@id/play_pause_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        tools:text="1:10" />
+
+    <TextView
+        android:id="@+id/time_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="34dp"
+        android:fontFamily="@font/amiri_regular"
+        android:text="@string/time_zero"
+        android:textColor="@color/sand"
+        android:textSize="13sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/time_elapsed"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="3:20" />
+
+    <!-- Controls -->
+    <ImageView
+        android:id="@+id/play_star"
+        android:layout_width="132dp"
+        android:layout_height="132dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/star_ornament"
+        app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
+        app:layout_constraintEnd_toEndOf="@id/play_pause_button"
+        app:layout_constraintStart_toStartOf="@id/play_pause_button"
+        app:layout_constraintTop_toTopOf="@id/play_pause_button" />
+
+    <ImageButton
+        android:id="@+id/play_pause_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="@dimen/controls_bottom_margin"
+        android:background="@drawable/bg_play_button"
+        android:contentDescription="@string/cd_play"
+        android:elevation="6dp"
+        android:padding="22dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time_elapsed" />
+
+    <ImageButton
+        android:id="@+id/previous_button"
+        style="@style/Widget.Blaylist.ControlButton"
+        android:layout_marginEnd="36dp"
+        android:contentDescription="@string/cd_previous"
+        android:src="@drawable/ic_skip_previous"
+        app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
+        app:layout_constraintEnd_toStartOf="@id/play_pause_button"
+        app:layout_constraintTop_toTopOf="@id/play_pause_button" />
+
+    <ImageButton
+        android:id="@+id/next_button"
+        style="@style/Widget.Blaylist.ControlButton"
+        android:layout_marginStart="36dp"
+        android:contentDescription="@string/cd_next"
+        android:src="@drawable/ic_skip_next"
+        app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
+        app:layout_constraintStart_toEndOf="@id/play_pause_button"
+        app:layout_constraintTop_toTopOf="@id/play_pause_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

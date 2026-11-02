@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="360dp"
+    android:height="140dp"
+    android:viewportWidth="360"
+    android:viewportHeight="140">
+    <!-- glow on the horizon -->
+    <path android:pathData="M0,0 L360,0 L360,140 L0,140 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="0"
+                android:endX="0" android:endY="90">
+                <item android:offset="0" android:color="#005A2B4C" />
+                <item android:offset="1" android:color="#FF9A4A33" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#FF6E3B2A"
+        android:pathData="M0,70 C50,48 95,52 140,66 C185,80 220,46 270,44 C310,42 340,56 360,62 L360,140 L0,140 Z" />
+    <!-- a lone palm on the far dune -->
+    <group android:translateX="50">
+    <path android:fillColor="#FF3B2016"
+        android:pathData="M283,56 C282,40 281,24 279,16 L281,16 C283,24 285,40 286.5,56 Z" />
+    <path android:fillColor="#FF3B2016"
+        android:pathData="M280,16 C272,10 262,12 256,18 C264,14 272,15 280,18 Z M280,16 C286,8 296,8 302,13 C294,11 287,13 281,18 Z M280,16 C276,6 268,3 262,4 C270,7 275,11 279,17 Z M281,16 C287,4 296,2 300,4 C293,6 287,10 282,17 Z M280,17 C274,18 268,24 266,30 C271,24 276,20 281,18 Z M281,17 C288,18 293,24 294,29 C289,23 285,20 280,18 Z" />
+    </group>
+    <path android:fillColor="#FF3B2016"
+        android:pathData="M0,98 C60,80 120,84 175,98 C225,110 275,84 325,84 C340,84 352,88 360,90 L360,140 L0,140 Z" />
+    <path android:fillColor="#FF21120C"
+        android:pathData="M0,122 C70,110 140,112 200,122 C250,130 310,114 360,116 L360,140 L0,140 Z" />
+</vector>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Morphs the play icon into the pause icon. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <group android:name="rotation" android:pivotX="12" android:pivotY="12">
+                <path android:name="icon" android:fillColor="#3E2414" android:pathData="M8,5 L12,7.55 L12,16.45 L8,19 Z M12,7.55 L19,12 L19,12 L12,16.45 Z" />
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="icon">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="320"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="pathData"
+                android:valueFrom="M8,5 L12,7.55 L12,16.45 L8,19 Z M12,7.55 L19,12 L19,12 L12,16.45 Z"
+                android:valueTo="M7,5 L10.5,5 L10.5,19 L7,19 Z M13.5,5 L17,5 L17,19 L13.5,19 Z"
+                android:valueType="pathType" />
+        </aapt:attr>
+    </target>
+    <target android:name="rotation">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="320"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="rotation"
+                android:valueFrom="-90"
+                android:valueTo="0" />
+        </aapt:attr>
+    </target>
+</animated-vector>

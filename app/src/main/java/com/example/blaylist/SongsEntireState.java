@@ -12,6 +12,8 @@ public class SongsEntireState {
     private Song[] songs_list;
 
     public SongsEntireState(){
+        this.song_playing = new MutableLiveData<>();
+        this.songs_list = new Song[0];
 
         // TODO: load all songs from the /Music folder to the Song list
         // TODO: in case there is a prior context, it should be loaded(current song id and its postition)
@@ -21,6 +23,10 @@ public class SongsEntireState {
     public LiveData<SongPlaying> get_song_playing(){
         // return an immutable version of the song currently playing
         return song_playing;
+    }
+
+    public Song[] get_songs_list(){
+        return songs_list;
     }
 
     public void updateSongPlaying(SongPlaying new_song){

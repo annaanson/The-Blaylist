@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/parchment"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:rippleColor="#33D4A437"
+    app:strokeColor="@color/sand_dark"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="76dp"
+        android:orientation="horizontal"
+        android:paddingVertical="8dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="14dp">
+
+        <com.example.blaylist.ArchImageView
+            android:id="@+id/song_art"
+            android:layout_width="52dp"
+            android:layout_height="62dp"
+            android:contentDescription="@string/cd_album_art"
+            android:scaleType="centerCrop"
+            android:src="@drawable/art_placeholder"
+            app:archStrokeColor="@color/gold"
+            app:archStrokeWidth="2dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/song_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Blaylist.SongTitle"
+                tools:text="Song of the Sands" />
+
+            <TextView
+                android:id="@+id/song_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Blaylist.SongAuthor"
+                tools:text="The Wandering Shepherd" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/song_star"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="10dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_item_star" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

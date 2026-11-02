@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Songs rise one after another like a caravan coming over the dune. -->
+<layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/item_rise"
+    android:animationOrder="normal"
+    android:delay="12%" />

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- soft glow -->
+    <path android:fillColor="#0DF0CF74" android:pathData="M24,2 A22,22 0 1,1 23.99,2 Z" />
+    <path android:fillColor="#F0CF74"
+        android:pathData="M26,8 A16,16 0 1,0 40,32 A13,13 0 1,1 26,8 Z" />
+</vector>

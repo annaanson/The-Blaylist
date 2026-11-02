@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Blaylist</string>
+    <string name="home_subtitle">Songs of the Sands</string>
+    <string name="song_count_zero">The caravan is empty</string>
+    <plurals name="song_count">
+        <item quantity="one">%d song in the caravan</item>
+        <item quantity="other">%d songs in the caravan</item>
+    </plurals>
+    <string name="empty_title">The well is dry</string>
+    <string name="empty_message">No songs were found in the Music folder.\nAdd some songs and return to the oasis.</string>
+    <string name="unknown_song">Untitled Song</string>
+    <string name="nothing_playing">No song is playing</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="time_zero">0:00</string>
+
+    <string name="cd_logo">Blaylist logo</string>
+    <string name="cd_album_art">Song image</string>
+    <string name="cd_back">Back to all songs</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_pause">Pause</string>
+    <string name="cd_next">Play next song</string>
+    <string name="cd_previous">Play previous song</string>
 </resources>

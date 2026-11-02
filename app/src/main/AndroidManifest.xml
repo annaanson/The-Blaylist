@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PlayingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Blaylist.Night"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -2,4 +2,30 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Sands & parchment (home screen) -->
+    <color name="parchment">#FFF6EBD2</color>
+    <color name="sand_light">#FFEEDDB8</color>
+    <color name="sand">#FFE2C795</color>
+    <color name="sand_dark">#FFC9A46A</color>
+
+    <!-- Earth & clay -->
+    <color name="terracotta">#FFA9472A</color>
+    <color name="terracotta_dark">#FF7A2E1A</color>
+    <color name="date_brown">#FF3E2414</color>
+    <color name="brown_muted">#FF7B5A3C</color>
+    <color name="olive">#FF6B7339</color>
+
+    <!-- Gold of the lamps -->
+    <color name="gold">#FFD4A437</color>
+    <color name="gold_light">#FFF0CF74</color>
+    <color name="gold_dark">#FF9C7420</color>
+
+    <!-- Desert night (playing screen) -->
+    <color name="night">#FF15112B</color>
+    <color name="night_mid">#FF2A2050</color>
+    <color name="dusk">#FF5A2B4C</color>
+    <color name="horizon">#FF9A4A33</color>
+    <color name="dune_far">#FF6E3B2A</color>
+    <color name="dune_near">#FF3B2016</color>
 </resources>
