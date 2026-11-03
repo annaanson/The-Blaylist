@@ -33,6 +33,7 @@ public class PlayingActivity extends AppCompatActivity {
     public static final String EXTRA_SONG_INDEX = "song_index";
 
     private SongsViewModel view_model;
+    private AudioService audio_service;
 
     private ImageView song_art;
     private TextView song_title;
@@ -69,7 +70,7 @@ public class PlayingActivity extends AppCompatActivity {
         }
 
         view_model = new ViewModelProvider(this).get(SongsViewModel.class);
-
+        audio_service = AudioService.getInstance();
 
         song_art = findViewById(R.id.song_art);
         song_title = findViewById(R.id.song_title);
@@ -82,20 +83,21 @@ public class PlayingActivity extends AppCompatActivity {
         ImageButton previous_button = findViewById(R.id.previous_button);
 
         findViewById(R.id.back_button).setOnClickListener(v -> finish());
+        seek_bar.setOnTouchListener((v, event) -> true);
 
         play_pause_button.setOnClickListener(v -> {
             pressBounce(v);
-//            view_model.onPlayPauseClicked();
+            audio_service.on_play_pause_click();
         });
         next_button.setOnClickListener(v -> {
             nudge(v, 1);
             slide_direction = 1;
-//            view_model.onNextClicked();
+            audio_service.playNext();
         });
         previous_button.setOnClickListener(v -> {
             nudge(v, -1);
             slide_direction = -1;
-//            view_model.onPreviousClicked();
+            audio_service.playPrev();
         });
 
         setupSceneryAnimations();
@@ -199,11 +201,11 @@ public class PlayingActivity extends AppCompatActivity {
         shown_song = song;
     }
 
-    private void showProgress(int secs_from_start, long duration) {
+    private void showProgress(long secs_from_start, long duration) {
         time_total.setText(formatTime(duration));
         seek_bar.setMax(Math.max((int)duration, 0));
         if (!user_seeking) {
-            seek_bar.setProgress(secs_from_start);
+            seek_bar.setProgress((int)secs_from_start);
             time_elapsed.setText(formatTime(secs_from_start));
         }
     }

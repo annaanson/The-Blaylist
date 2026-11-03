@@ -20,6 +20,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private SongsViewModel view_model;
+    private AudioService audio_service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         view_model = new ViewModelProvider(this).get(SongsViewModel.class);
+        audio_service = AudioService.getInstance();
+        audio_service.init(this);
 
         RecyclerView songs_list = findViewById(R.id.songs_list);
         SongAdapter adapter = new SongAdapter(this::openSong);
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openSong(int index) {
-        view_model.onSongSelectedUIUpdate(index);
+        audio_service.changeSong(index);
         Intent intent = new Intent(this, PlayingActivity.class);
         intent.putExtra(PlayingActivity.EXTRA_SONG_INDEX, index);
         startActivity(intent);

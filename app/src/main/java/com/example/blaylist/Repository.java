@@ -19,7 +19,6 @@ import java.util.concurrent.Executors;
 public class Repository {
     private final MutableLiveData<List<Song>> songs = new MutableLiveData<>();
     private final MutableLiveData<SongPlaying> current_song_playing = new MutableLiveData<>();
-    private final MutableLiveData<Long> position = new MutableLiveData<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private Repository() {
@@ -34,14 +33,10 @@ public class Repository {
     // getters
     public LiveData<List<Song>> getSongs() { return songs; }
     public LiveData<SongPlaying> getCurrentSongPlaying() { return current_song_playing; }
-    public LiveData<Long> getPosition() { return position; }
 
     // setters
     public void setCurrentSongPlaying(SongPlaying new_song){
         current_song_playing.postValue(new_song);
-    }
-    public void setPosition(long ms){
-        position.postValue(ms);
     }
 
     public void loadSongs(Context context) {
