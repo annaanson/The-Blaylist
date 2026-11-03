@@ -18,6 +18,8 @@ public class Song {
         this.duration = duration;
     }
 
+    public long getId() { return id; }
+
     public Uri getContentUri(){
         return contentUri;
     }

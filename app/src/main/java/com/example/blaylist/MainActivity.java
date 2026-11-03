@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    /** Home screen: song list, taps, opening the playing screen. */
+    private static final String TAG = "Blaylist.MainScreen";
 
     private SongsViewModel view_model;
     private AudioService audio_service;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate" + (savedInstanceState == null ? "" : " (recreated)"));
         WindowCompat.enableEdgeToEdge(getWindow());
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -42,21 +45,37 @@ public class MainActivity extends AppCompatActivity {
         songs_list.setAdapter(adapter);
 
         // redraw the list every time the songs change (they arrive later, from a background thread)
+        // after the app was killed on the playing screen, reopen it (not when Android restores the screens itself)
+        boolean reopen_playing = savedInstanceState == null && audio_service.wasOnPlayingScreen();
         view_model.getSongs().observe(this, songs -> {
             if (songs == null) {
+                Log.e(TAG, "songs observer got null - showing the empty state");
                 showSongCount(0);
                 return;
             }
+            Log.d(TAG, "songs observer: showing " + songs.size() + " songs");
             adapter.setSongs(songs);
             showSongCount(songs.size());
             songs_list.scheduleLayoutAnimation();
+            if (reopen_playing && !songs.isEmpty()) {
+                Log.d(TAG, "reopening the playing screen from last time");
+                startActivity(new Intent(this, PlayingActivity.class)
+                        .putExtra(PlayingActivity.EXTRA_SONG_INDEX, audio_service.getCurrentSongIndex()));
+            }
         });
 
         view_model.loadSongs();
         playHeaderAnimation();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        audio_service.save();
+    }
+
     private void openSong(int index) {
+        Log.d(TAG, "song #" + index + " tapped, opening the playing screen");
         audio_service.changeSong(index);
         Intent intent = new Intent(this, PlayingActivity.class);
         intent.putExtra(PlayingActivity.EXTRA_SONG_INDEX, index);

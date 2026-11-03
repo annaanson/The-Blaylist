@@ -6,6 +6,7 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -30,6 +31,9 @@ import java.util.Locale;
 
 public class PlayingActivity extends AppCompatActivity {
 
+    /** Playing screen: buttons, what is drawn, state updates received. */
+    private static final String TAG = "Blaylist.PlayingScreen";
+
     public static final String EXTRA_SONG_INDEX = "song_index";
 
     private SongsViewModel view_model;
@@ -52,6 +56,8 @@ public class PlayingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate for song #" + getIntent().getIntExtra(EXTRA_SONG_INDEX, -1)
+                + (savedInstanceState == null ? "" : " (recreated)"));
         WindowCompat.enableEdgeToEdge(getWindow());
         setContentView(R.layout.activity_playing);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -71,6 +77,8 @@ public class PlayingActivity extends AppCompatActivity {
 
         view_model = new ViewModelProvider(this).get(SongsViewModel.class);
         audio_service = AudioService.getInstance();
+        audio_service.init(this);    // this screen can be the first one Android recreates after the app was killed
+        view_model.loadSongs();
 
         song_art = findViewById(R.id.song_art);
         song_title = findViewById(R.id.song_title);
@@ -82,19 +90,25 @@ public class PlayingActivity extends AppCompatActivity {
         ImageButton next_button = findViewById(R.id.next_button);
         ImageButton previous_button = findViewById(R.id.previous_button);
 
-        findViewById(R.id.back_button).setOnClickListener(v -> finish());
+        findViewById(R.id.back_button).setOnClickListener(v -> {
+            Log.d(TAG, "back button clicked");
+            finish();
+        });
         seek_bar.setOnTouchListener((v, event) -> true);
 
         play_pause_button.setOnClickListener(v -> {
+            Log.d(TAG, "play/pause button clicked");
             pressBounce(v);
             audio_service.on_play_pause_click();
         });
         next_button.setOnClickListener(v -> {
+            Log.d(TAG, "next button clicked");
             nudge(v, 1);
             slide_direction = 1;
             audio_service.playNext();
         });
         previous_button.setOnClickListener(v -> {
+            Log.d(TAG, "previous button clicked");
             nudge(v, -1);
             slide_direction = -1;
             audio_service.playPrev();
@@ -109,7 +123,20 @@ public class PlayingActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        audio_service.setOnPlayingScreen(true);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        audio_service.save();
+    }
+
+    @Override
     public void finish() {
+        audio_service.setOnPlayingScreen(false);   // the user left this screen on purpose
         super.finish();
         if (Build.VERSION.SDK_INT < 34) {
             overridePendingTransition(R.anim.hold, R.anim.slide_down_out);
@@ -118,6 +145,7 @@ public class PlayingActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
         star_spin.cancel();
         super.onDestroy();
     }
@@ -125,9 +153,12 @@ public class PlayingActivity extends AppCompatActivity {
     /** Draws the screen from the given state. Called every time SongPlaying changes. */
     private void render(SongPlaying state) {
         if (state == null || state.getCurrent_song() == null) {
+            Log.d(TAG, "render: no current song yet, nothing to draw");
             return;
         }
         Song song = state.getCurrent_song();
+        Log.d(TAG, "render: '" + song.getTitle() + "', playing=" + state.is_playing()
+                + ", position=" + state.getSecs_from_start());
         if (song != shown_song) {
             if (shown_song == null) {
                 showSong(song);
@@ -142,13 +173,14 @@ public class PlayingActivity extends AppCompatActivity {
     private void showSelectedSong(int index) {
         List<Song> songs = view_model.getSongs().getValue();
         if(songs == null){
-            // error;
+            Log.d(TAG, "showSelectedSong(" + index + "): songs not loaded yet (screen recreated after the app was killed) - waiting for the restored song");
             return;
         }
         if (index >= 0 && index < songs.size()) {
             showSong(songs.get(index));
             showProgress(0, songs.get(index).getDuration());
         } else {
+            Log.e(TAG, "showSelectedSong(" + index + "): index out of range, there are " + songs.size() + " songs");
             song_title.setText(R.string.nothing_playing);
             song_artist.setVisibility(View.GONE);
         }

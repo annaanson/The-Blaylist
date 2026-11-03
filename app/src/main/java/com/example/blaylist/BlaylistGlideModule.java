@@ -3,6 +3,7 @@ package com.example.blaylist;
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +28,8 @@ import java.io.InputStream;
 /** Makes Glide.with(...).load(mp3Uri) show the cover embedded in the mp3. */
 @GlideModule
 public final class BlaylistGlideModule extends AppGlideModule {
+    /** Cover art: reading the picture embedded in each mp3. */
+    private static final String TAG = "Blaylist.CoverLoader";
 
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
@@ -47,15 +50,25 @@ public final class BlaylistGlideModule extends AppGlideModule {
                 @Override
                 public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                    retriever.setDataSource(context, uri);
-                    byte[] cover = retriever.getEmbeddedPicture();
+                    byte[] cover;
                     try {
-                        retriever.release();
-                    } catch (IOException ignored) {
+                        retriever.setDataSource(context, uri);
+                        cover = retriever.getEmbeddedPicture();
+                    } catch (RuntimeException e) {
+                        Log.e(TAG, "can't open " + uri + " to read its cover", e);
+                        callback.onLoadFailed(e);
+                        return;
+                    } finally {
+                        try {
+                            retriever.release();
+                        } catch (IOException ignored) {
+                        }
                     }
                     if (cover == null) {
+                        Log.e(TAG, "no cover image embedded in " + uri + " - showing the placeholder");
                         callback.onLoadFailed(new FileNotFoundException("no cover in " + uri));
                     } else {
+                        Log.d(TAG, "read " + cover.length + " byte cover from " + uri);
                         callback.onDataReady(new ByteArrayInputStream(cover));
                     }
                 }

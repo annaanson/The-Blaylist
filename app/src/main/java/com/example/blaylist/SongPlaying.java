@@ -27,16 +27,7 @@ public class SongPlaying {
     public Song getCurrent_song() {
         return current_song;
     }
-
-    public void setCurrent_song(Song current_song) {
-        this.current_song = current_song;
-    }
-
     public long getSecs_from_start() {
         return secs_from_start;
-    }
-
-    public void setSecs_from_start(long secs_from_start) {
-        this.secs_from_start = secs_from_start;
     }
 }

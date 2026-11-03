@@ -1,5 +1,6 @@
 package com.example.blaylist;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.bumptech.glide.Glide;
  * Shows the songs as a list of parchment cards: image (if any), title and author (if any).
  */
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
+    /** Song list cards: list updates and card taps. */
+    private static final String TAG = "Blaylist.SongAdapter";
 
     public interface OnSongClickListener {
         void onSongClick(int index);
@@ -33,6 +36,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     public void setSongs(List<Song> songs) {
+        Log.d(TAG, "setSongs: " + songs.size() + " songs");
         this.songs = songs;
         notifyDataSetChanged();
     }
@@ -90,7 +94,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             item.setOnClickListener(v -> {
                 int index = getBindingAdapterPosition();
                 if (index != RecyclerView.NO_POSITION) {
+                    Log.d(TAG, "card #" + index + " clicked");
                     listener.onSongClick(index);
+                } else {
+                    Log.e(TAG, "card clicked but it has no position (list is changing) - click ignored");
                 }
             });
         }

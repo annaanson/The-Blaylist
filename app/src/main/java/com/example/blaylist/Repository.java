@@ -17,6 +17,9 @@ import java.util.concurrent.Executors;
 
 // Singleton class
 public class Repository {
+    /** Data: loading songs from MediaStore and the current-song state. */
+    private static final String TAG = "Blaylist.Repository";
+
     private final MutableLiveData<List<Song>> songs = new MutableLiveData<>();
     private final MutableLiveData<SongPlaying> current_song_playing = new MutableLiveData<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -36,11 +39,14 @@ public class Repository {
 
     // setters
     public void setCurrentSongPlaying(SongPlaying new_song){
+        Log.d(TAG, "current song -> " + (new_song == null ? "none"
+                : "'" + new_song.getCurrent_song().getTitle() + "', playing=" + new_song.is_playing()));
         current_song_playing.postValue(new_song);
     }
 
     public void loadSongs(Context context) {
         Context app = context.getApplicationContext();
+        Log.d(TAG, "loadSongs: starting MediaStore query in the background");
         executor.execute(() -> {
             List<Song> result = new ArrayList<>();
 
@@ -64,6 +70,12 @@ public class Repository {
             try (Cursor cursor = app.getContentResolver().query(
                     collection, projection, selection, selectionArgs, sortOrder)) {
 
+                if (cursor == null) {
+                    Log.e(TAG, "loadSongs: MediaStore query returned null (media provider unavailable?)");
+                    songs.postValue(result);
+                    return;
+                }
+
                 int idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
                 int titleCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE);
                 int artistCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
@@ -77,11 +89,18 @@ public class Repository {
                     long duration = cursor.getLong(durCol);
 
                     result.add(new Song(id, contentUri, title, artist, duration));
+                    Log.d(TAG, "loadSongs: found #" + (result.size() - 1) + " '" + title + "' by " + artist + ", " + duration + " ms");
                 }
+            } catch (RuntimeException e) {
+                Log.e(TAG, "loadSongs: MediaStore query failed", e);
             }
 
             songs.postValue(result); // publish on main thread
-            Log.d("Repository", "loaded " + result.size() + " songs");
+            if (result.isEmpty()) {
+                Log.d(TAG, "loadSongs: 0 songs found - is READ_MEDIA_AUDIO granted and are there mp3s in Music/?");
+            } else {
+                Log.d(TAG, "loadSongs: loaded " + result.size() + " songs");
+            }
         });
     }
 }
